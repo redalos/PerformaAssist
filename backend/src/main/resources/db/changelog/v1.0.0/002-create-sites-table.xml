@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-sites-table" author="performaassist">
+        <comment>Création de la table des sites</comment>
+        
+        <createTable tableName="sites">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="address" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="country" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="postal_code" type="VARCHAR(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_by" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <!-- Index sur le nom pour les recherches -->
+        <createIndex tableName="sites" indexName="idx_sites_name">
+            <column name="name"/>
+        </createIndex>
+
+        <!-- Index sur is_active -->
+        <createIndex tableName="sites" indexName="idx_sites_is_active">
+            <column name="is_active"/>
+        </createIndex>
+
+        <!-- Ajouter la contrainte de clé étrangère pour users.site_id -->
+        <addForeignKeyConstraint
+            baseTableName="users"
+            baseColumnNames="site_id"
+            constraintName="fk_users_site_id"
+            referencedTableName="sites"
+            referencedColumnNames="id"
+            onDelete="SET NULL"
+            onUpdate="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>
+

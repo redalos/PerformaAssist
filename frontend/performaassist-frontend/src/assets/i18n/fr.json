@@ -1,0 +1,148 @@
+{
+  "app": {
+    "title": "PerformaAssist",
+    "subtitle": "Gestion managériale terrain"
+  },
+  "auth": {
+    "login": "Connexion",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "signIn": "Se connecter",
+    "invalidCredentials": "Identifiants invalides",
+    "logout": "Déconnexion"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "checklists": "Checklists",
+    "actionPlans": "Plans d'action",
+    "meetings": "Réunions",
+    "kpi": "Indicateurs",
+    "documents": "Documents",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "checklist": {
+    "title": "Checklists",
+    "create": "Créer une checklist",
+    "templates": "Modèles",
+    "executions": "Exécutions",
+    "name": "Nom",
+    "description": "Description",
+    "category": "Catégorie",
+    "items": "Éléments",
+    "mandatory": "Obligatoire",
+    "optional": "Optionnel",
+    "scoring": "Notation",
+    "binary": "Binaire (Oui/Non)",
+    "scale": "Échelle",
+    "percentage": "Pourcentage"
+  },
+  "actionPlan": {
+    "title": "Plans d'action",
+    "create": "Créer une action",
+    "task": "Tâche",
+    "assignee": "Assigné à",
+    "dueDate": "Échéance",
+    "status": "Statut",
+    "todo": "À faire",
+    "inProgress": "En cours",
+    "completed": "Terminé",
+    "priority": "Priorité",
+    "high": "Haute",
+    "medium": "Moyenne",
+    "low": "Basse"
+  },
+  "meeting": {
+    "title": "Réunions",
+    "create": "Planifier une réunion",
+    "agenda": "Ordre du jour",
+    "participants": "Participants",
+    "notes": "Notes",
+    "actions": "Actions à suivre",
+    "date": "Date",
+    "time": "Heure",
+    "location": "Lieu"
+  },
+  "kpi": {
+    "title": "Indicateurs KPI",
+    "create": "Ajouter un indicateur",
+    "value": "Valeur",
+    "target": "Objectif",
+    "unit": "Unité",
+    "period": "Période",
+    "trend": "Tendance",
+    "chart": "Graphique"
+  },
+  "document": {
+    "title": "Documents",
+    "upload": "Télécharger",
+    "sop": "Procédures",
+    "search": "Rechercher",
+    "category": "Catégorie",
+    "type": "Type",
+    "size": "Taille",
+    "lastModified": "Dernière modification"
+  },
+  "role": {
+    "admin": "Administrateur",
+    "manager": "Manager",
+    "employee": "Employé"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "loading": "Chargement...",
+    "noData": "Aucune donnée",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "close": "Fermer",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "select": "Sélectionner",
+    "all": "Tout",
+    "none": "Aucun",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "time": "Heure",
+    "name": "Nom",
+    "description": "Description",
+    "created": "Créé",
+    "updated": "Modifié",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "email": "Adresse e-mail invalide",
+    "minLength": "Minimum {{min}} caractères",
+    "maxLength": "Maximum {{max}} caractères",
+    "pattern": "Format invalide",
+    "min": "Valeur minimale: {{min}}",
+    "max": "Valeur maximale: {{max}}"
+  },
+  "messages": {
+    "success": {
+      "created": "Créé avec succès",
+      "updated": "Mis à jour avec succès",
+      "deleted": "Supprimé avec succès",
+      "saved": "Enregistré avec succès"
+    },
+    "error": {
+      "generic": "Une erreur s'est produite",
+      "network": "Erreur de connexion",
+      "unauthorized": "Accès non autorisé",
+      "forbidden": "Accès interdit",
+      "notFound": "Ressource non trouvée",
+      "validation": "Erreur de validation"
+    }
+  }
+}
+

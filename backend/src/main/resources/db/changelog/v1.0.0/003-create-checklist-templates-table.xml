@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-create-checklist-templates-table" author="performaassist">
+        <comment>Création de la table des modèles de checklists</comment>
+        
+        <createTable tableName="checklist_templates">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="category" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_by" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <!-- Index sur le nom -->
+        <createIndex tableName="checklist_templates" indexName="idx_checklist_templates_name">
+            <column name="name"/>
+        </createIndex>
+
+        <!-- Index sur la catégorie -->
+        <createIndex tableName="checklist_templates" indexName="idx_checklist_templates_category">
+            <column name="category"/>
+        </createIndex>
+
+        <!-- Index sur created_by -->
+        <createIndex tableName="checklist_templates" indexName="idx_checklist_templates_created_by">
+            <column name="created_by"/>
+        </createIndex>
+
+        <!-- Index sur is_active -->
+        <createIndex tableName="checklist_templates" indexName="idx_checklist_templates_is_active">
+            <column name="is_active"/>
+        </createIndex>
+
+        <!-- Contrainte de clé étrangère pour created_by -->
+        <addForeignKeyConstraint
+            baseTableName="checklist_templates"
+            baseColumnNames="created_by"
+            constraintName="fk_checklist_templates_created_by"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE"/>
+
+        <!-- Contrainte de clé étrangère pour updated_by -->
+        <addForeignKeyConstraint
+            baseTableName="checklist_templates"
+            baseColumnNames="updated_by"
+            constraintName="fk_checklist_templates_updated_by"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="SET NULL"
+            onUpdate="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>
+

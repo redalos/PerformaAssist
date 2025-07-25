@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="004-create-checklist-items-table" author="performaassist">
+        <comment>Création de la table des éléments de checklist</comment>
+        
+        <createTable tableName="checklist_items">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="template_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_mandatory" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scoring_type" type="VARCHAR(20)" defaultValue="BINARY">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_score" type="INTEGER" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Index sur template_id -->
+        <createIndex tableName="checklist_items" indexName="idx_checklist_items_template_id">
+            <column name="template_id"/>
+        </createIndex>
+
+        <!-- Index sur order_index pour le tri -->
+        <createIndex tableName="checklist_items" indexName="idx_checklist_items_order">
+            <column name="template_id"/>
+            <column name="order_index"/>
+        </createIndex>
+
+        <!-- Index sur is_mandatory -->
+        <createIndex tableName="checklist_items" indexName="idx_checklist_items_mandatory">
+            <column name="is_mandatory"/>
+        </createIndex>
+
+        <!-- Contrainte de clé étrangère pour template_id -->
+        <addForeignKeyConstraint
+            baseTableName="checklist_items"
+            baseColumnNames="template_id"
+            constraintName="fk_checklist_items_template_id"
+            referencedTableName="checklist_templates"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE"/>
+
+        <!-- Contrainte de vérification pour scoring_type -->
+        <sql>
+            ALTER TABLE checklist_items ADD CONSTRAINT chk_checklist_items_scoring_type 
+            CHECK (scoring_type IN ('BINARY', 'SCALE', 'PERCENTAGE'));
+        </sql>
+
+        <!-- Contrainte de vérification pour max_score -->
+        <sql>
+            ALTER TABLE checklist_items ADD CONSTRAINT chk_checklist_items_max_score 
+            CHECK (max_score > 0);
+        </sql>
+
+        <!-- Contrainte de vérification pour order_index -->
+        <sql>
+            ALTER TABLE checklist_items ADD CONSTRAINT chk_checklist_items_order_index 
+            CHECK (order_index >= 0);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Changelog principal pour PerformaAssist -->
+    
+    <!-- Version 1.0.0 - Structure initiale -->
+    <include file="db/changelog/v1.0.0/001-create-users-table.xml"/>
+    <include file="db/changelog/v1.0.0/002-create-sites-table.xml"/>
+    <include file="db/changelog/v1.0.0/003-create-checklist-templates-table.xml"/>
+    <include file="db/changelog/v1.0.0/004-create-checklist-items-table.xml"/>
+    <include file="db/changelog/v1.0.0/005-create-checklist-executions-table.xml"/>
+    <include file="db/changelog/v1.0.0/006-create-checklist-execution-items-table.xml"/>
+    <include file="db/changelog/v1.0.0/007-create-action-plans-table.xml"/>
+    <include file="db/changelog/v1.0.0/008-create-action-plan-comments-table.xml"/>
+    <include file="db/changelog/v1.0.0/009-create-meetings-table.xml"/>
+    <include file="db/changelog/v1.0.0/010-create-meeting-participants-table.xml"/>
+    <include file="db/changelog/v1.0.0/011-create-meeting-notes-table.xml"/>
+    <include file="db/changelog/v1.0.0/012-create-kpis-table.xml"/>
+    <include file="db/changelog/v1.0.0/013-create-kpi-values-table.xml"/>
+    <include file="db/changelog/v1.0.0/014-create-documents-table.xml"/>
+    <include file="db/changelog/v1.0.0/015-create-document-versions-table.xml"/>
+    <include file="db/changelog/v1.0.0/016-insert-initial-data.xml"/>
+
+</databaseChangeLog>
+

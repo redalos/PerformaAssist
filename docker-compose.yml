@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  database:
+    image: postgres:15-alpine
+    container_name: performaassist-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: performaassist
+      POSTGRES_USER: performaassist
+      POSTGRES_PASSWORD: performaassist123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/database/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - performaassist-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U performaassist -d performaassist"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Backend Spring Boot
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: performaassist-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/performaassist
+      SPRING_DATASOURCE_USERNAME: performaassist
+      SPRING_DATASOURCE_PASSWORD: performaassist123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_LIQUIBASE_ENABLED: true
+      JWT_SECRET: performaassist-jwt-secret-key-2024-very-long-and-secure
+      JWT_EXPIRATION_MS: 900000
+      JWT_REFRESH_EXPIRATION_MS: 604800000
+      SERVER_PORT: 8080
+      LOGGING_LEVEL_COM_PERFORMAASSIST: DEBUG
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - performaassist-network
+    volumes:
+      - backend_logs:/app/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Frontend Angular
+  frontend:
+    build:
+      context: ./frontend/performaassist-frontend
+      dockerfile: Dockerfile
+    container_name: performaassist-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - performaassist-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Redis pour la mise en cache (optionnel)
+  redis:
+    image: redis:7-alpine
+    container_name: performaassist-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass performaassist123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - performaassist-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Adminer pour l'administration de la base de données (développement)
+  adminer:
+    image: adminer:latest
+    container_name: performaassist-adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+    networks:
+      - performaassist-network
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    profiles:
+      - dev
+
+# Volumes persistants
+volumes:
+  postgres_data:
+    driver: local
+    name: performaassist_postgres_data
+  redis_data:
+    driver: local
+    name: performaassist_redis_data
+  backend_logs:
+    driver: local
+    name: performaassist_backend_logs
+
+# Réseau personnalisé
+networks:
+  performaassist-network:
+    driver: bridge
+    name: performaassist-network
+

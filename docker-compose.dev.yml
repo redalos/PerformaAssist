@@ -1,0 +1,105 @@
+version: '3.8'
+
+# Configuration Docker Compose pour le développement
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # Base de données PostgreSQL avec configuration de développement
+  database:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: performaassist_dev
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/database/dev-data.sql:/docker-entrypoint-initdb.d/dev-data.sql:ro
+
+  # Backend avec hot reload et debug
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+      target: development
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/performaassist_dev
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: dev_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      LOGGING_LEVEL_COM_PERFORMAASSIST: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Port de debug
+    volumes:
+      - ./backend/src:/app/src:ro
+      - ./backend/target:/app/target
+      - backend_dev_logs:/app/logs
+
+  # Frontend avec hot reload
+  frontend:
+    build:
+      context: ./frontend/performaassist-frontend
+      dockerfile: Dockerfile.dev
+      target: development
+    environment:
+      NODE_ENV: development
+      NG_CLI_ANALYTICS: false
+    ports:
+      - "4200:4200"
+      - "49153:49153"  # Port pour le live reload
+    volumes:
+      - ./frontend/performaassist-frontend/src:/app/src:ro
+      - ./frontend/performaassist-frontend/angular.json:/app/angular.json:ro
+      - ./frontend/performaassist-frontend/package.json:/app/package.json:ro
+      - ./frontend/performaassist-frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ./frontend/performaassist-frontend/tailwind.config.js:/app/tailwind.config.js:ro
+    command: ng serve --host 0.0.0.0 --port 4200 --live-reload --poll 2000
+
+  # Adminer toujours disponible en développement
+  adminer:
+    profiles: []  # Toujours actif en dev
+
+  # Mailhog pour tester les emails en développement
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: performaassist-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Interface web
+    networks:
+      - performaassist-network
+
+  # Elasticsearch pour la recherche (développement)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: performaassist-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_dev_data:/usr/share/elasticsearch/data
+    networks:
+      - performaassist-network
+
+volumes:
+  postgres_dev_data:
+    driver: local
+    name: performaassist_postgres_dev_data
+  backend_dev_logs:
+    driver: local
+    name: performaassist_backend_dev_logs
+  elasticsearch_dev_data:
+    driver: local
+    name: performaassist_elasticsearch_dev_data
+
