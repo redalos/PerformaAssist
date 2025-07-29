@@ -1,0 +1,8 @@
+{
+  "name": "manus-saas-frontend",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "echo 'Run ng serve'",
+    "test": "echo 'Run ng test'"
+  }
+}
